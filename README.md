@@ -1,2 +1,2 @@
 # Job-Search-Platform
-Created a job search platform using MERN stack also integrating AI in it
+Created a job search platform using MERN stack working on integrating AI in it
