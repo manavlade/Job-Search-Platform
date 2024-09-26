@@ -9,20 +9,10 @@ import userRoute from "./routes/user.routes.js";
 dotenv.config({});
 
 const app = express();
-const PORT = process.config.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
-
-
-
-app.get('/start', (req, res) => {
-    return res.status(200).json({
-        message: "Checking the server",
-        success: true
-    })
-})
 
 const corsOptions = {
     origin: 'http://localhost:5173/',
@@ -31,7 +21,17 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
+
+const PORT = process.config.PORT || 3000;
+
 app.use("/api/v1/user", userRoute);
+
+// app.get('/start', (req, res) => {
+//     return res.status(200).json({
+//         message: "Checking the server",
+//         success: true
+//     })
+// })
 
 app.listen(PORT, () => {
     connectDB();
