@@ -5,13 +5,15 @@ import dotenv from "dotenv"
 import connectDB from "./utils/db.js";
 
 import userRoute from "./routes/user.routes.js";
+import companyRoute from "./routes/company.routes.js";
+import jobRoute from "./routes/job.route.js";
 
 dotenv.config({});
 
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
@@ -22,16 +24,14 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 
-const PORT = process.config.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/company", companyRoute);
 
-// app.get('/start', (req, res) => {
-//     return res.status(200).json({
-//         message: "Checking the server",
-//         success: true
-//     })
-// })
+app.use("/api/v1/job", jobRoute);
+
+
 
 app.listen(PORT, () => {
     connectDB();

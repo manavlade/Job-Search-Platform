@@ -42,34 +42,33 @@ export const register = async (req, res) => {
         console.log(error);
     }
 }
-
 export const login = async (req, res) => {
     try {
         const { email, password, role } = req.body;
 
         if (!email || !password || !role) {
             return res.status(400).json({
-                message: "Insuffient data",
+                message: "Insufficient data",
                 success: false,
             });
-        };
+        }
 
-        const user = await User.findOne({ email });
+        let user = await User.findOne({ email });  // Changed const to let
 
         if (!user) {
             return res.status(400).json({
                 message: "Incorrect email or password",
                 success: false,
             });
-        };
+        }
 
-        const isHassedMatch = await bcrypt.compare(password, user.password)
+        const isHassedMatch = await bcrypt.compare(password, user.password);
         if (!isHassedMatch) {
             return res.status(400).json({
                 message: "Incorrect email or password",
                 success: false,
-            });
-        };
+            }); 
+        }
 
         if (role != user.role) {
             return res.status(400).json({
@@ -80,29 +79,28 @@ export const login = async (req, res) => {
 
         const tokenData = {
             userId: user._id
-        }
-
+        };
 
         const token = await jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: '1d' });
 
-        user = {
+        user = {  // Reassigning user, which is now declared with let
             _id: user._id,
             fullName: user.fullName,
             email: user.email,
             phoneNumber: user.phoneNumber,
             role: user.role,
             profile: user.profile
-        }
+        };
 
-        return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpsOnly: true, sameSite: 'strict' }).json({
-            message: `Welcome back  ${user.fullName}`,
+        return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' }).json({
+            message: `Welcome back ${user.fullName}`,
             success: true
-        })
+        });
 
     } catch (error) {
         console.log(error);
     }
-}
+};
 
 export const logout = async (req, res) => {
     try {
@@ -122,15 +120,11 @@ export const updateUser = async (req, res) => {
         const { fullName, email, phoneNumber, bio, skills } = req.body;
         const file = req.file;
 
-        if (!fullName || !email || !bio || !phoneNumber || !skills) {
-            return res.status(400).json({
-                message: "Insuffient data",
-                success: false,
-            });
-        };
-        
-        const skillsArray = skills.split(",")
-        const userId = req._id; // yaha req.id aana chahiye but no idea why _id  1:16:18 minute
+        let skillsArray;
+        if (skills) {
+            skillsArray = skills.split(",");
+        }
+        const userId = req.id; // yaha req.id aana chahiye but no idea why _id  1:16:18 minute
 
         let user = await User.findById(userId);
 
@@ -141,11 +135,11 @@ export const updateUser = async (req, res) => {
             });
         }
 
-        user.fullName = fullName;
-        user.email = email;
-        user.phoneNumber = phoneNumber;
-        user.profile.bio = bio;
-        user.profile.skills = skills;
+        if (fullName) user.fullName = fullName;
+        if (email) user.email = email
+        if (phoneNumber) user.phoneNumber = phoneNumber
+        if (bio) user.profile.bio = bio
+        if (skills) user.profile.skills = skillsArray
 
         await user.save();
         

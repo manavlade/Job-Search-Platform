@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const comapnySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true // yaha new field add kiya
     },
     description: {
         type: String
@@ -13,7 +14,6 @@ const comapnySchema = new mongoose.Schema({
     },
     location: {
         type: String,
-        required: true
     },
     logo: {
         type: String
