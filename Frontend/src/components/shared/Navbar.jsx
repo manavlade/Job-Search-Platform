@@ -4,9 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { LogOut, Settings, User2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
-    const user = false;
+    const { user } = useSelector(store=>store.auth);
     return (
         <div className="bg-white shadow-lg py-2">
             <div className="flex items-center justify-between mx-auto max-w-7xl h-16 px-4">
@@ -20,9 +21,19 @@ const Navbar = () => {
                 {/* Navigation Links */}
                 <div className="flex items-center space-x-8">
                     <ul className="flex items-center space-x-6 font-medium text-gray-700">
-                        <li className="hover:text-purple-600 cursor-pointer transition-colors duration-200">Home</li>
-                        <li className="hover:text-purple-600 cursor-pointer transition-colors duration-200">About</li>
-                        <li className="hover:text-purple-600 cursor-pointer transition-colors duration-200">Browse</li>
+                        <li className="hover:text-purple-600 cursor-pointer transition-colors duration-200">
+                            <Link to="/" > Home</Link>
+                        </li>
+                        <li className="hover:text-purple-600 cursor-pointer transition-colors duration-200">
+                            <Link to="/jobs">
+                                Jobs
+                            </Link>
+                        </li>
+                        <li className="hover:text-purple-600 cursor-pointer transition-colors duration-200">
+                            <Link to= "/browse" >
+                                Browse
+                            </Link>
+                        </li>
                     </ul>
 
                     {

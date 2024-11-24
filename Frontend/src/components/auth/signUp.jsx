@@ -3,9 +3,18 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { USER_API_END_POINT } from '@/utils/constants';
+import { toast } from 'sonner';
+import { setLoading } from '@/redux/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const SignUp = () => {
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { loading } = useSelector(store => store.auth)
     const [input, setInput] = useState({
         fullName:"",
         email:"",
@@ -20,13 +29,44 @@ const SignUp = () => {
     }
 
     const changeFileHandler = (e) => {
-        setInput({...input, file:e.target.file?.[0]});
+        setInput({...input, file:e.target.files?.[0]});
         //yaha video mei files hai 
     }
 
     const SubmitHandler = async (e) => {
         e.preventDefault();
-        console.log(input);
+        const formData = new FormData();
+        formData.append("fullName", input.fullName);
+        formData.append("email", input.email);
+        formData.append("phoneNumber", input.phoneNumber);
+        formData.append("password", input.password);
+        formData.append("role", input.role);
+
+        if(input.file){
+            formData.append('file', input.file)
+        }
+
+        try {
+            dispatch(setLoading(true))
+            const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
+                headers:{
+                    "Content-Type": "multipart/form-data"
+                },
+                withCredentials:true,
+            });
+
+            if(res.data.success){
+                toast.success(res.data.message)
+                navigate('/login');
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response.data.message);
+            
+        }
+        finally{
+            dispatch(setLoading(false));
+        }
     }
     return (
        <>
@@ -117,11 +157,14 @@ const SignUp = () => {
                                 className="cursor-pointer mt-2"
                             />
                         </div>
+                        {
+                            loading ? <Button className=" w-full my-4" > <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please Wait </Button> : <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-semibold py-2 rounded-md hover:from-indigo-500 hover:to-purple-600 transition-all duration-200">
+                             Create Account
+                            </Button>
+                        }
 
                         <div className="pt-4">
-                            <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-semibold py-2 rounded-md hover:from-indigo-500 hover:to-purple-600 transition-all duration-200">
-                                Create Account
-                            </Button>
+                          
                             <span className=' md:pl-14' >Already have an account? <Link className=' cursor-pointer text-blue-700' to="/login">Login</Link> </span>
                         </div>
                     </div>

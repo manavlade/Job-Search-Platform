@@ -3,13 +3,25 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { RadioGroup } from '../ui/radio-group';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import axios from 'axios';
+import { USER_API_END_POINT } from '@/utils/constants';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading, setUser } from '@/redux/authSlice';
+import { Loader2 } from 'lucide-react';
+
 
 const Login = () => {
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { loading } = useSelector(store => store.auth)
+
     const [input, setInput] = useState({
         email: "",
         password: "",
-        role:""
+        role: ""
     });
 
     const changeEventHandler = (e) => {
@@ -22,7 +34,28 @@ const Login = () => {
 
     const SubmitHandler = async (e) => {
         e.preventDefault();
-        console.log(input);
+        try {
+            dispatch(setLoading(true))
+            const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                withCredentials: true,
+            });
+
+            if (res.data.success) {
+                dispatch(setUser(res.data));
+                navigate('/');
+                toast.success(res.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response.data.message);
+        }
+
+        finally {
+            dispatch(setLoading(false))
+        }
     }
     return (
         <>
@@ -80,11 +113,14 @@ const Login = () => {
                                 </div>
                             </RadioGroup>
                         </div>
-
-                        <div className="pt-4">
-                            <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-semibold py-2 rounded-md hover:from-indigo-500 hover:to-purple-600 transition-all duration-200">
+                        {
+                            loading ? <Button className=" w-full my-4" > <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please Wait </Button> : <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-semibold py-2 rounded-md hover:from-indigo-500 hover:to-purple-600 transition-all duration-200">
                                 Log In
                             </Button>
+                        }
+
+                        <div className="pt-4">
+
                             <span className=' md:pl-14' >Dont't Have an Account <Link className=' cursor-pointer text-blue-700' to="/signUp">Create Account</Link> </span>
                         </div>
                     </div>

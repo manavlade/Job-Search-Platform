@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 export const register = async (req, res) => {
     try {
         const { fullName, email, password, phoneNumber, role } = req.body;
-
+        
         if (!fullName || !email || !password || !phoneNumber || !role) {
             return res.status(400).json({
                 message: "Insuffient data",
@@ -41,7 +41,9 @@ export const register = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+    
 }
+
 export const login = async (req, res) => {
     try {
         const { email, password, role } = req.body;
@@ -94,7 +96,8 @@ export const login = async (req, res) => {
 
         return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' }).json({
             message: `Welcome back ${user.fullName}`,
-            success: true
+            success: true,
+            user,
         });
 
     } catch (error) {
