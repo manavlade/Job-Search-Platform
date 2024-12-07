@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const Navbar = () => {
-    const { user } = useSelector(store=>store.auth);
+    const { user } = useSelector(store => store.auth);
     return (
         <div className="bg-white shadow-lg py-2">
             <div className="flex items-center justify-between mx-auto max-w-7xl h-16 px-4">
@@ -30,7 +30,7 @@ const Navbar = () => {
                             </Link>
                         </li>
                         <li className="hover:text-purple-600 cursor-pointer transition-colors duration-200">
-                            <Link to= "/browse" >
+                            <Link to="/browse" >
                                 Browse
                             </Link>
                         </li>
@@ -73,9 +73,11 @@ const Navbar = () => {
                                         <hr className="my-2" />
 
                                         <div className="flex flex-col space-y-2">
-                                            <Button variant="link" className="flex items-center text-xl w-full text-gray-700 hover:text-purple-600">
-                                                <User2 className="w-6 h-6 mr-3" /> Profile
-                                            </Button>
+                                            <Link to="/profile" >
+                                                <Button variant="link" className="flex items-center text-xl w-full text-gray-700 hover:text-purple-600">
+                                                    <User2 className="w-6 h-6 mr-3" /> Profile
+                                                </Button>
+                                            </Link>
                                             <Button variant="link" className="flex items-center text-xl w-full text-gray-700 hover:text-purple-600">
                                                 <Settings className="w-6 h-6 mr-3" /> Settings
                                             </Button>

@@ -2,12 +2,15 @@ import { Bookmark, Clock } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
+import { useNavigate } from "react-router-dom";
 
 const Job = () => {
+    const navigate = useNavigate();
+    const jobId = "hjdbkhbasvbnknkpnqkwnkvd"
     return (
         <div className="p-6 m-5 rounded-xl bg-white border border-gray-200 shadow-lg transition-shadow hover:shadow-2xl">
             <div className="flex items-center justify-between mb-4 text-gray-500 text-sm">
-                <p className=" flex gap-5" > <Clock/> 3 Days Ago</p>
+                <p className=" flex gap-5" > <Clock /> 3 Days Ago</p>
                 <Button
                     className="rounded-full text-gray-400 hover:text-purple-600"
                     size="icon"
@@ -41,8 +44,9 @@ const Job = () => {
                 <Badge className="bg-white text-purple-700 px-3 py-1 rounded-full font-bold text-xs">24 LPA</Badge>
             </div>
             <div className=" flex items-center mt-2 justify-center" >
-                <Button 
-                className= " bg-purple-700 text-white hover:bg-white hover:text-purple-700"
+                <Button
+                    onClick={() => navigate(`/jobs/description/${jobId}`)}
+                    className=" bg-purple-700 text-white hover:bg-white hover:text-purple-700"
                 >
                     Details
                 </Button>
